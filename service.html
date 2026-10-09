@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>服务保障 | 云宿 · 著名景点酒店推荐</title>
+<meta name="description" content="云宿服务保障：实拍与真实点评、紧邻核心景点、价格透明可退改、7×24 客服陪伴。含预订流程与常见问题解答。">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="service">
+
+<!-- ===== 图标精灵 ===== -->
+<svg style="display:none" aria-hidden="true">
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.2-3.2"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.6-7-9.6A4.4 4.4 0 0 1 12 7a4.4 4.4 0 0 1 7 3.4c0 5-7 9.6-7 9.6z"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s6-5.3 6-10a6 6 0 1 0-12 0c0 4.7 6 10 6 10z"/><circle cx="12" cy="11" r="2.4"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6 3h3l2 5-2.2 1.4a12 12 0 0 0 5.8 5.8L16 13l5 2v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4 5.2 2 2 0 0 1 6 3z"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 7.6-7 9-4-1.4-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3l1.8 4.9L18.7 9.7l-4.9 1.8L12 16.4l-1.8-4.9L5.3 9.7l4.9-1.8z"/><path d="M18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-headset" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="2.5" y="13" width="4" height="6" rx="1.6"/><rect x="17.5" y="13" width="4" height="6" rx="1.6"/><path d="M20 19v.5a2.5 2.5 0 0 1-2.5 2.5H13"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M11 3H4v7l10 10 7-7z"/><circle cx="7.5" cy="6.5" r="1.4"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.6 6.5L12 12.6l8.4-6.1"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></symbol>
+</svg>
+
+<div id="app" v-cloak>
+
+  <!-- ===================== 顶部导航 ===================== -->
+  <header class="topbar" :class="{ solid: scrolled }">
+    <div class="container topbar-inner">
+      <a class="brand" href="index.html" @click="navTo($event,'index.html')">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-text"><strong>云宿</strong><em>YUNSU TRAVEL</em></span>
+      </a>
+      <nav class="nav" :class="{ open: menuOpen }">
+        <a href="index.html" :class="{ active: page === 'home' }" @click="navTo($event,'index.html')">首页</a>
+        <a href="destinations.html" :class="{ active: page === 'destinations' }" @click="navTo($event,'destinations.html')">热门目的地</a>
+        <a href="hotels.html" :class="{ active: page === 'hotels' }" @click="navTo($event,'hotels.html')">精选酒店</a>
+        <a href="service.html" :class="{ active: page === 'service' }" @click="navTo($event,'service.html')">服务保障</a>
+      </nav>
+      <div class="topbar-actions">
+        <button class="fav-btn" :class="{ active: onlyFav }" @click="toggleOnlyFav" :title="onlyFav ? '显示全部酒店' : '查看我的收藏'">
+          <svg class="ic"><use href="#i-heart"/></svg>
+          <span>收藏</span>
+          <b v-if="favorites.length">{{ favorites.length }}</b>
+        </button>
+        <button class="menu-btn" @click="menuOpen = !menuOpen" aria-label="菜单">
+          <svg class="ic"><use :href="menuOpen ? '#i-close' : '#i-menu'"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-main">
+
+    <!-- ===================== 页面横幅 ===================== -->
+    <section class="page-hero">
+      <div class="page-hero-bg" style="background-image:url('img/hotel-guilin-2.jpg')"></div>
+      <div class="page-hero-veil"></div>
+      <div class="container">
+        <div class="page-hero-inner">
+          <nav class="breadcrumb">
+            <a href="index.html" @click="navTo($event,'index.html')">首页</a>
+            <span class="sep">/</span>
+            <span class="cur">服务保障</span>
+          </nav>
+          <h1>服务保障</h1>
+          <p>我们只推荐真正住过、值得住的酒店。以下四项承诺，贯穿你从挑选到退房的每一步。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 四项保障 ===================== -->
+    <section class="section">
+      <div class="container">
+        <div class="section-head center">
+          <div>
+            <p class="eyebrow">OUR COMMITMENT</p>
+            <h2>四项核心保障</h2>
+            <p class="section-desc">把不确定的环节都替你确认一遍。</p>
+          </div>
+        </div>
+        <div class="svc-grid">
+          <article class="svc-card">
+            <div class="svc-head">
+              <span class="why-ico"><svg class="ic"><use href="#i-shield"/></svg></span>
+              <div><h3>实拍与真实点评</h3><span>PHOTOS &amp; REVIEWS</span></div>
+            </div>
+            <p>全部图片来自酒店实景拍摄，点评数据仅来源于完成实际入住的订单。我们不对评价做筛选或删除，好评差评一并呈现，让你看到酒店最真实的样子。</p>
+            <ul class="svc-list">
+              <li><svg class="ic"><use href="#i-check"/></svg> 只有退房用户才能提交评价</li>
+              <li><svg class="ic"><use href="#i-check"/></svg> 每条点评标注入住日期与房型</li>
+              <li><svg class="ic"><use href="#i-check"/></svg> 图片与房型逐间核对，不用样板间图</li>
+            </ul>
+          </article>
+
+          <article class="svc-card">
+            <div class="svc-head">
+              <span class="why-ico"><svg class="ic"><use href="#i-pin"/></svg></span>
+              <div><h3>紧邻核心景点</h3><span>LOCATION</span></div>
+            </div>
+            <p>我们只收录景点周边的酒店，并实测步行或短驳时间。与其把两小时花在路上，不如多留一小时看日出。</p>
+            <ul class="svc-list">
+              <li><svg class="ic"><use href="#i-check"/></svg> 每家酒店标注到核心景点的实际距离</li>
+              <li><svg class="ic"><use href="#i-check"/></svg> 优先选择步行可达或含接驳的酒店</li>
+              <li><svg class="ic"><use href="#i-check"/></svg> 提供最佳季节与建议行程天数参考</li>
+            </ul>
+          </article>
+
+          <article class="svc-card">
+            <div class="svc-head">
+              <span class="why-ico"><svg class="ic"><use href="#i-tag"/></svg></span>
+              <div><h3>价格透明可退改</h3><span>PRICE &amp; CANCEL</span></div>
+            </div>
+            <p>展示价格即为含税含服务费的到手价，无任何平台附加费用。大部分房型支持入住前免费取消，行程有变也不用担心。</p>
+            <ul class="svc-list">
+              <li><svg class="ic"><use href="#i-check"/></svg> 标价已含税费，无隐形消费</li>
+              <li><svg class="ic"><use href="#i-check"/></svg> 入住前 24 - 48 小时免费取消</li>
+              <li><svg class="ic"><use href="#i-check"/></svg> 支持到店付，先住后付更放心</li>
+            </ul>
+          </article>
+
+          <article class="svc-card">
+            <div class="svc-head">
+              <span class="why-ico"><svg class="ic"><use href="#i-headset"/></svg></span>
+              <div><h3>7×24 客服陪伴</h3><span>SUPPORT</span></div>
+            </div>
+            <p>从下单到退房，全程有真人客服在线。入住遇到任何问题，30 分钟内响应，2 小时内给出解决方案。</p>
+            <ul class="svc-list">
+              <li><svg class="ic"><use href="#i-check"/></svg> 电话 / 在线客服全年无休</li>
+              <li><svg class="ic"><use href="#i-check"/></svg> 房型不符可协调升级或全额退款</li>
+              <li><svg class="ic"><use href="#i-check"/></svg> 电子发票退房后 24 小时内开具</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 预订流程 ===================== -->
+    <section class="section section-alt">
+      <div class="container">
+        <div class="section-head center">
+          <div>
+            <p class="eyebrow">HOW IT WORKS</p>
+            <h2>四步完成预订</h2>
+            <p class="section-desc">从挑选到入住，每一步都清晰可查。</p>
+          </div>
+        </div>
+        <div class="flow">
+          <div class="flow-step">
+            <span class="flow-no">1</span>
+            <h3>挑选目的地</h3>
+            <p>在目的地页对比六大景点的最佳季节、亮点与行程建议，确定去向。</p>
+          </div>
+          <div class="flow-step">
+            <span class="flow-no">2</span>
+            <h3>对比酒店</h3>
+            <p>按价格、星级筛选，查看实拍图、设施与真实点评，加入收藏慢慢挑。</p>
+          </div>
+          <div class="flow-step">
+            <span class="flow-no">3</span>
+            <h3>在线预订</h3>
+            <p>确认房型与取消政策后提交订单，支持在线支付或到店付，即时确认。</p>
+          </div>
+          <div class="flow-step">
+            <span class="flow-no">4</span>
+            <h3>入住与售后</h3>
+            <p>凭订单号办理入住，全程客服在线；退房后可点评并开具电子发票。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 常见问题 ===================== -->
+    <section class="section">
+      <div class="container">
+        <div class="section-head center">
+          <div>
+            <p class="eyebrow">FAQ</p>
+            <h2>常见问题</h2>
+            <p class="section-desc">还有疑问？点击展开查看解答。</p>
+          </div>
+        </div>
+        <div class="faq">
+          <div v-for="(f, i) in faqs" :key="i" class="faq-item" :class="{ open: faqOpen === i }">
+            <button class="faq-q" @click="toggleFaq(i)">
+              <span>{{ f.q }}</span>
+              <svg class="ic"><use href="#i-close"/></svg>
+            </button>
+            <div class="faq-a"><p>{{ f.a }}</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 联系方式 ===================== -->
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <div class="contact-band">
+          <div class="contact-item">
+            <span class="ci"><svg class="ic"><use href="#i-phone"/></svg></span>
+            <div><b>客服热线</b><span>400-888-6666<br>全年无休 7×24 小时</span></div>
+          </div>
+          <div class="contact-item">
+            <span class="ci"><svg class="ic"><use href="#i-mail"/></svg></span>
+            <div><b>邮件咨询</b><span>service@yunsu-travel.demo<br>24 小时内回复</span></div>
+          </div>
+          <div class="contact-item">
+            <span class="ci"><svg class="ic"><use href="#i-doc"/></svg></span>
+            <div><b>发票与合同</b><span>退房后 24 小时内开具电子发票<br>支持专票登记</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CTA ===================== -->
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <div class="cta-band">
+          <h2>放心出发吧</h2>
+          <p>保障已就位，剩下的只是选一间喜欢的酒店。</p>
+          <div class="cta-actions">
+            <a class="btn-primary" href="hotels.html" @click="navTo($event,'hotels.html')">浏览精选酒店 <svg class="ic"><use href="#i-arrow"/></svg></a>
+            <a class="btn-ghost" href="destinations.html" @click="navTo($event,'destinations.html')">查看热门目的地</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================== 页脚 ===================== -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <a class="brand brand-light" href="index.html" @click="navTo($event,'index.html')">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span class="brand-text"><strong>云宿</strong><em>YUNSU TRAVEL</em></span>
+        </a>
+        <p>住进风景里，醒来即是山水。云宿致力于为中国旅行者推荐最值得入住的景点酒店。</p>
+      </div>
+      <div class="footer-col">
+        <h4>热门目的地</h4>
+        <ul>
+          <li v-for="d in destinations" :key="d.id">
+            <a :href="'hotels.html?dest=' + d.id" @click="goHotels($event, d.id)">{{ d.name }}</a>
+          </li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>网站导航</h4>
+        <ul>
+          <li><a href="index.html" @click="navTo($event,'index.html')">首页</a></li>
+          <li><a href="destinations.html" @click="navTo($event,'destinations.html')">热门目的地</a></li>
+          <li><a href="hotels.html" @click="navTo($event,'hotels.html')">精选酒店</a></li>
+          <li><a href="service.html" @click="navTo($event,'service.html')">服务保障</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>联系我们</h4>
+        <ul>
+          <li><svg class="ic"><use href="#i-phone"/></svg> 400-888-6666</li>
+          <li><svg class="ic"><use href="#i-calendar"/></svg> 全年无休 7×24</li>
+        </ul>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p>© {{ year }} 云宿 YUNSU TRAVEL · 本页面为演示项目，酒店信息仅供参考</p>
+      <p>图片来源：公开网络图库，仅用于学习演示</p>
+    </div>
+  </footer>
+
+  <transition name="toast"><div v-if="toast" class="toast">{{ toast }}</div></transition>
+</div>
+
+<script src="js/vue.global.prod.js"></script>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
